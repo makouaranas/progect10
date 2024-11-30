@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Maritime Adventures Morocco</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+</head>
+<body>
+    <div id="app" v-cloak>
+        <nav class="navbar">
+            <div class="nav-container">
+                <div class="logo">
+                    <a href="index.html">Maritime Adventures</a>
+                </div>
+                <div class="nav-links">
+                    <a href="#home" v-text="translations?.[currentLanguage]?.nav?.home"></a>
+                    <a href="#services" v-text="translations?.[currentLanguage]?.nav?.services"></a>
+                    <a href="#about" v-text="translations?.[currentLanguage]?.nav?.about"></a>
+                    <a href="#contact" v-text="translations?.[currentLanguage]?.nav?.contact"></a>
+                    <div class="language-selector">
+                        <button class="current-lang">
+                            <span class="lang-text" v-text="currentLanguage?.toUpperCase()"></span>
+                        </button>
+                        <ul class="language-dropdown">
+                            <li @click="changeLanguage('en')">English</li>
+                            <li @click="changeLanguage('fr')">Français</li>
+                            <li @click="changeLanguage('ar')">العربية</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="menu-toggle">
+                    <i class="fas fa-bars"></i>
+                </div>
+            </div>
+        </nav>
+
+        <section id="home" class="hero">
+            <div class="hero-slider">
+                <button class="slide-nav prev-slide" @click="prevSlide">
+                    <i class="fas fa-chevron-left"></i>
+                </button>
+                <button class="slide-nav next-slide" @click="nextSlide">
+                    <i class="fas fa-chevron-right"></i>
+                </button>
+                <div class="slide" :class="{ active: currentSlide === 0 }">
+                    <div class="slide-image" style="background-image: url('https://images.unsplash.com/photo-1544551763-46a013bb70d5?ixlib=rb-4.0.3')">
+                        <div class="slide-overlay"></div>
+                    </div>
+                    <div class="slide-content">
+                        <h1>Deep Sea Fishing Adventure</h1>
+                        <p>Experience the thrill of deep sea fishing with our expert guides.</p>
+                        <div class="slide-info">
+                            <span><i class="fas fa-clock"></i> 6 hours</span>
+                            <span><i class="fas fa-users"></i> Up to 6 people</span>
+                            <span><i class="fas fa-tag"></i> From $149</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="slide" :class="{ active: currentSlide === 1 }">
+                    <div class="slide-image" style="background-image: url('https://images.unsplash.com/photo-1682687220742-aba13b6e50ba?ixlib=rb-4.0.3')">
+                        <div class="slide-overlay"></div>
+                    </div>
+                    <div class="slide-content">
+                        <h1 v-text="translations?.[currentLanguage]?.hero?.title2"></h1>
+                        <p v-text="translations?.[currentLanguage]?.hero?.subtitle2"></p>
+                    </div>
+                </div>
+                <div class="slide" :class="{ active: currentSlide === 2 }">
+                    <div class="slide-image" style="background-image: url('https://images.unsplash.com/photo-1596450514735-111a2fe02935?ixlib=rb-4.0.3')">
+                        <div class="slide-overlay"></div>
+                    </div>
+                    <div class="slide-content">
+                        <h1 v-text="translations?.[currentLanguage]?.hero?.title3"></h1>
+                        <p v-text="translations?.[currentLanguage]?.hero?.subtitle3"></p>
+                    </div>
+                </div>
+            </div>
+            <div class="slider-navigation">
+                <button class="prev-slide" @click="prevSlide"><i class="fas fa-chevron-left"></i></button>
+                <div class="slide-dots">
+                    <span class="dot" :class="{ active: currentSlide === 0 }" @click="setSlide(0)"></span>
+                    <span class="dot" :class="{ active: currentSlide === 1 }" @click="setSlide(1)"></span>
+                    <span class="dot" :class="{ active: currentSlide === 2 }" @click="setSlide(2)"></span>
+                </div>
+                <button class="next-slide" @click="nextSlide"><i class="fas fa-chevron-right"></i></button>
+            </div>
+            <div class="hero-overlay"></div>
+        </section>
+
+        <section id="services" class="services">
+            <div class="section-header">
+                <h2 v-text="translations?.[currentLanguage]?.services?.title"></h2>
+                <p v-text="translations?.[currentLanguage]?.services?.subtitle"></p>
+            </div>
+            <div class="services-container">
+                <button class="scroll-btn prev-btn" @click="scrollServices('left')">
+                    <i class="fas fa-chevron-left"></i>
+                </button>
+                <div class="services-wrapper">
+                    <div class="services-grid">
+                        <div class="service-card fishing-card">
+                            <div class="service-image">
+                                <img src="https://images.unsplash.com/photo-1544551763-46a013bb70d5?ixlib=rb-4.0.3" alt="Deep Sea Fishing">
+                                <div class="service-overlay"></div>
+                            </div>
+                            <div class="service-content">
+                                <h3 class="service-title">Deep Sea Fishing Adventure</h3>
+                                <p class="service-description">Experience the thrill of deep sea fishing with our expert guides.</p>
+                                <div class="service-details">
+                                    <div class="detail-item">
+                                        <i class="fas fa-clock"></i>
+                                        <span>6 hours</span>
+                                    </div>
+                                    <div class="detail-item">
+                                        <i class="fas fa-users"></i>
+                                        <span>Up to 6 people</span>
+                                    </div>
+                                    <div class="detail-item">
+                                        <i class="fas fa-tag"></i>
+                                        <span>From $149</span>
+                                    </div>
+                                </div>
+                                <a href="booking.html?service=fishing" class="book-now-btn">Book Now</a>
+                            </div>
+                        </div>
+
+                        <div class="service-card diving-card">
+                            <div class="service-image">
+                                <img src="https://images.unsplash.com/photo-1682687220742-aba13b6e50ba?ixlib=rb-4.0.3" alt="Diving">
+                                <div class="service-overlay"></div>
+                            </div>
+                            <div class="service-content">
+                                <h3 class="service-title">Scuba Diving Experience</h3>
+                                <p class="service-description">Explore the underwater world with professional diving instructors.</p>
+                                <div class="service-details">
+                                    <div class="detail-item">
+                                        <i class="fas fa-clock"></i>
+                                        <span>4 hours</span>
+                                    </div>
+                                    <div class="detail-item">
+                                        <i class="fas fa-users"></i>
+                                        <span>Up to 4 people</span>
+                                    </div>
+                                    <div class="detail-item">
+                                        <i class="fas fa-tag"></i>
+                                        <span>From $199</span>
+                                    </div>
+                                </div>
+                                <a href="booking.html?service=diving" class="book-now-btn">Book Now</a>
+                            </div>
+                        </div>
+
+                        <div class="service-card cruise-card">
+                            <div class="service-image">
+                                <img src="https://images.unsplash.com/photo-1599174898893-6f675919d029?ixlib=rb-4.0.3" alt="Luxury Cruise">
+                                <div class="service-overlay"></div>
+                            </div>
+                            <div class="service-content">
+                                <h3 class="service-title">Sunset Cruise Adventure</h3>
+                                <p class="service-description">Enjoy a luxurious sunset cruise along the beautiful coastline.</p>
+                                <div class="service-details">
+                                    <div class="detail-item">
+                                        <i class="fas fa-clock"></i>
+                                        <span>3 hours</span>
+                                    </div>
+                                    <div class="detail-item">
+                                        <i class="fas fa-users"></i>
+                                        <span>Up to 12 people</span>
+                                    </div>
+                                    <div class="detail-item">
+                                        <i class="fas fa-tag"></i>
+                                        <span>From $299</span>
+                                    </div>
+                                </div>
+                                <a href="booking.html?service=cruise" class="book-now-btn">Book Now</a>
+                            </div>
+                        </div>
+
+                        <div class="service-card jetski-card">
+                            <div class="service-image">
+                                <img src="https://images.unsplash.com/photo-1622651783098-0bc0035d3dfa?ixlib=rb-4.0.3" alt="Jet Ski">
+                                <div class="service-overlay"></div>
+                            </div>
+                            <div class="service-content">
+                                <h3 class="service-title">Jet Ski Adventure</h3>
+                                <p class="service-description">Experience the thrill of riding waves on our powerful jet skis.</p>
+                                <div class="service-details">
+                                    <div class="detail-item">
+                                        <i class="fas fa-clock"></i>
+                                        <span>2 hours</span>
+                                    </div>
+                                    <div class="detail-item">
+                                        <i class="fas fa-users"></i>
+                                        <span>Up to 2 people</span>
+                                    </div>
+                                    <div class="detail-item">
+                                        <i class="fas fa-tag"></i>
+                                        <span>From $129</span>
+                                    </div>
+                                </div>
+                                <a href="booking.html?service=jetski" class="book-now-btn">Book Now</a>
+                            </div>
+                        </div>
+
+                        <div class="service-card sailing-card">
+                            <div class="service-image">
+                                <img src="https://images.unsplash.com/photo-1500930287596-c1ecaa373bb2?ixlib=rb-4.0.3" alt="Sailing">
+                                <div class="service-overlay"></div>
+                            </div>
+                            <div class="service-content">
+                                <h3 class="service-title">Sailing Experience</h3>
+                                <p class="service-description">Learn sailing basics or enjoy a relaxing day on the water.</p>
+                                <div class="service-details">
+                                    <div class="detail-item">
+                                        <i class="fas fa-clock"></i>
+                                        <span>5 hours</span>
+                                    </div>
+                                    <div class="detail-item">
+                                        <i class="fas fa-users"></i>
+                                        <span>Up to 8 people</span>
+                                    </div>
+                                    <div class="detail-item">
+                                        <i class="fas fa-tag"></i>
+                                        <span>From $179</span>
+                                    </div>
+                                </div>
+                                <a href="booking.html?service=sailing" class="book-now-btn">Book Now</a>
+                            </div>
+                        </div>
+
+                        <div class="service-card whale-card">
+                            <div class="service-image">
+                                <img src="https://images.unsplash.com/photo-1511314814214-81dc6551aee5?ixlib=rb-4.0.3" alt="Whale Watching">
+                                <div class="service-overlay"></div>
+                            </div>
+                            <div class="service-content">
+                                <h3 class="service-title">Whale Watching Tour</h3>
+                                <p class="service-description">Witness majestic whales in their natural habitat.</p>
+                                <div class="service-details">
+                                    <div class="detail-item">
+                                        <i class="fas fa-clock"></i>
+                                        <span>4 hours</span>
+                                    </div>
+                                    <div class="detail-item">
+                                        <i class="fas fa-users"></i>
+                                        <span>Up to 20 people</span>
+                                    </div>
+                                    <div class="detail-item">
+                                        <i class="fas fa-tag"></i>
+                                        <span>From $159</span>
+                                    </div>
+                                </div>
+                                <a href="booking.html?service=whale" class="book-now-btn">Book Now</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <button class="scroll-btn next-btn" @click="scrollServices('right')">
+                    <i class="fas fa-chevron-right"></i>
+                </button>
+            </div>
+        </section>
+
+        <section id="locations" class="locations">
+            <div class="section-header">
+                <h2 v-text="translations?.[currentLanguage]?.locations?.title"></h2>
+                <p v-text="translations?.[currentLanguage]?.locations?.subtitle"></p>
+            </div>
+            <div class="map-container">
+                <img src="https://images.unsplash.com/photo-1589487391730-58f20eb2c308?ixlib=rb-4.0.3" 
+                     alt="Marina View"
+                     class="location-map">
+                <div class="map-overlay">
+                    <div class="location-info">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <p v-text="translations?.[currentLanguage]?.contact?.address"></p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="about" class="about">
+            <div class="about-content">
+                <h2 v-text="translations?.[currentLanguage]?.about?.title"></h2>
+                <p v-text="translations?.[currentLanguage]?.about?.description"></p>
+                <div class="about-links">
+                    <a href="about/message.html" v-text="translations?.[currentLanguage]?.about?.links?.message"></a>
+                    <a href="about/missions.html" v-text="translations?.[currentLanguage]?.about?.links?.missions"></a>
+                    <a href="about/safety.html" v-text="translations?.[currentLanguage]?.about?.links?.safety"></a>
+                    <a href="about/insurance.html" v-text="translations?.[currentLanguage]?.about?.links?.insurance"></a>
+                    <a href="about/legal.html" v-text="translations?.[currentLanguage]?.about?.links?.legal"></a>
+                </div>
+            </div>
+        </section>
+
+        <section id="contact" class="contact">
+            <div class="contact-container">
+                <h2 v-text="translations?.[currentLanguage]?.contact?.title"></h2>
+                <div class="contact-grid">
+                    <div class="contact-info">
+                        <div class="info-card">
+                            <div class="info-item">
+                                <i class="fas fa-map-marker-alt"></i>
+                                <div class="info-content">
+                                    <h3>Location</h3>
+                                    <p>Northern Morocco</p>
+                                </div>
+                            </div>
+                            <div class="info-item">
+                                <i class="fas fa-phone"></i>
+                                <div class="info-content">
+                                    <h3>Phone</h3>
+                                    <p>+212 XXX-XXXXXX</p>
+                                </div>
+                            </div>
+                            <div class="info-item">
+                                <i class="fas fa-envelope"></i>
+                                <div class="info-content">
+                                    <h3>Email</h3>
+                                    <p>info@maritime-adventures.ma</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="social-links-container">
+                            <h3>Connect With Us</h3>
+                            <div class="social-links">
+                                <a href="#" class="social-link whatsapp">
+                                    <i class="fab fa-whatsapp"></i>
+                                    <span>WhatsApp</span>
+                                </a>
+                                <a href="#" class="social-link facebook">
+                                    <i class="fab fa-facebook"></i>
+                                    <span>Facebook</span>
+                                </a>
+                                <a href="#" class="social-link instagram">
+                                    <i class="fab fa-instagram"></i>
+                                    <span>Instagram</span>
+                                </a>
+                                <a href="#" class="social-link tiktok">
+                                    <i class="fab fa-tiktok"></i>
+                                    <span>TikTok</span>
+                                </a>
+                                <a href="#" class="social-link youtube">
+                                    <i class="fab fa-youtube"></i>
+                                    <span>YouTube</span>
+                                </a>
+                                <a href="#" class="social-link snapchat">
+                                    <i class="fab fa-snapchat"></i>
+                                    <span>Snapchat</span>
+                                </a>
+                                <a href="#" class="social-link twitter">
+                                    <i class="fab fa-twitter"></i>
+                                    <span>Twitter</span>
+                                </a>
+                                <a href="#" class="social-link telegram">
+                                    <i class="fab fa-telegram"></i>
+                                    <span>Telegram</span>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <form class="contact-form">
+                        <div class="form-header">
+                            <h3 v-text="translations?.[currentLanguage]?.contact?.formTitle"></h3>
+                            <p v-text="translations?.[currentLanguage]?.contact?.formSubtitle"></p>
+                        </div>
+                        <div class="form-group">
+                            <div class="input-group">
+                                <i class="fas fa-user"></i>
+                                <input type="text" :placeholder="translations?.[currentLanguage]?.contact?.name" required>
+                            </div>
+                            <div class="input-group">
+                                <i class="fas fa-envelope"></i>
+                                <input type="email" :placeholder="translations?.[currentLanguage]?.contact?.email" required>
+                            </div>
+                        </div>
+                        <div class="input-group">
+                            <i class="fas fa-pen"></i>
+                            <textarea :placeholder="translations?.[currentLanguage]?.contact?.message" required></textarea>
+                        </div>
+                        <button type="submit" class="submit-button">
+                            <span v-text="translations?.[currentLanguage]?.contact?.send"></span>
+                            <i class="fas fa-paper-plane"></i>
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </section>
+
+        <footer>
+            <div class="footer-content">
+                <div class="footer-grid">
+                    <div class="footer-section">
+                        <h4>Payment Methods</h4>
+                        <div class="payment-methods">
+                            <i class="fab fa-cc-visa"></i>
+                            <i class="fab fa-cc-mastercard"></i>
+                            <i class="fab fa-paypal"></i>
+                            <span>Bank Transfer</span>
+                            <span>Wafa Cash</span>
+                            <span>Cash Plus</span>
+                        </div>
+                    </div>
+                    <div class="footer-section">
+                        <h4>Quick Links</h4>
+                        <a href="about/safety.html">Safety</a>
+                        <a href="about/insurance.html">Insurance</a>
+                        <a href="booking.html">Book Now</a>
+                    </div>
+                </div>
+                <p>&copy; 2024 Maritime Adventures Morocco. All rights reserved.</p>
+            </div>
+        </footer>
+
+        <div class="live-chat">
+            <button class="chat-toggle">
+                <i class="fas fa-comments"></i>
+            </button>
+        </div>
+    </div>
+
+    <script src="index.js"></script>
+</body>
+</html>

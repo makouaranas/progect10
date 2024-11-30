@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Account - Maritime Adventures</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <script src="navigation.js" defer></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        .account-message {
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            background: var(--section-bg);
+        }
+        
+        .message-box {
+            background: white;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            max-width: 400px;
+            margin: 1rem;
+        }
+        
+        .message-box h1 {
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+        }
+        
+        .back-link {
+            display: inline-block;
+            margin-top: 1rem;
+            padding: 0.5rem 1rem;
+            background: var(--primary-color);
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+            transition: background 0.3s ease;
+        }
+        
+        .back-link:hover {
+            background: var(--secondary-color);
+        }
+    </style>
+</head>
+<body>
+    <div id="app">
+        <nav class="navbar">
+            <div class="nav-container">
+                <div class="brand-title">
+                    <a href="index.html">Maritime Adventures</a>
+                </div>
+                <button class="menu-toggle">
+                    <div class="hamburger-menu">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </div>
+                </button>
+                <div class="nav-links">
+                    <a href="index.html">Home</a>
+                    <a href="index.html#services">Services</a>
+                    <a href="index.html#about">About</a>
+                    <a href="index.html#contact">Contact</a>
+                    <div class="language-selector">
+                        <select id="language-select" @change="changeLanguage($event)">
+                            <option value="en">English</option>
+                            <option value="fr">Français</option>
+                            <option value="ar">العربية</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </nav>
+
+        <main class="account-page">
+            <div class="account-container">
+                <div class="account-message">
+                    <div class="message-box">
+                        <h1>{{ translations[currentLanguage].account.title }}</h1>
+                        <p>{{ translations[currentLanguage].account.message }}</p>
+                        <a href="index.html" class="back-link">{{ translations[currentLanguage].account.backToHome }}</a>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="account.js"></script>
+</body>
+</html>
