@@ -5,114 +5,161 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Maritime Adventures - Booking</title>
     <link rel="stylesheet" href="styles.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <!-- Import Vue.js -->
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 <body>
-    <!-- Navigation Bar -->
-    <nav class="navbar">
-        <div class="nav-container">
-            <div class="logo">
-                <a href="index.html">Maritime Adventures</a>
-            </div>
-            <div class="nav-links">
-                <a href="index.html">Home</a>
-                <a href="index.html#services">Services</a>
-                <a href="index.html#about">About</a>
-                <a href="index.html#contact">Contact</a>
-            </div>
-        </div>
-    </nav>
-
-    <!-- Vue App Container -->
-    <div id="bookingApp">
-        <!-- Service Header -->
-        <div class="service-header" :style="{ backgroundImage: `url(${currentService.image})` }">
-            <div class="header-content">
-                <h1>{{ currentService.title }}</h1>
-                <p>{{ currentService.description }}</p>
-                <div class="service-details">
-                    <span><i class="fas fa-clock"></i> {{ currentService.duration }}</span>
-                    <span><i class="fas fa-users"></i> {{ currentService.capacity }}</span>
-                    <span><i class="fas fa-tag"></i> From ${{ currentService.basePrice }}</span>
-                </div>
+    <div id="bookingApp" class="booking-container">
+        <div class="booking-progress">
+            <div class="progress-bar" :style="{ width: progress + '%' }"></div>
+            <div class="step-indicators">
+                <div class="step" :class="{ 'active': step >= 1 }">1. Service Details</div>
+                <div class="step" :class="{ 'active': step >= 2 }">2. Add-ons</div>
+                <div class="step" :class="{ 'active': step >= 3 }">3. Contact Info</div>
+                <div class="step" :class="{ 'active': step >= 4 }">4. Confirmation</div>
             </div>
         </div>
 
-        <!-- Booking Form -->
-        <div class="booking-container">
-            <form @submit.prevent="submitBooking" class="booking-form">
-                <!-- Personal Details -->
-                <div class="form-section">
-                    <h2>Personal Information</h2>
-                    <div class="form-group">
-                        <label for="fullName">Full Name</label>
-                        <input type="text" id="fullName" v-model="booking.fullName" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="email">Email</label>
-                        <input type="email" id="email" v-model="booking.email" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="phone">Phone</label>
-                        <input type="tel" id="phone" v-model="booking.phone" required>
-                    </div>
-                </div>
+        <header class="booking-header">
+            <h1>{{ currentService.title }}</h1>
+            <p>{{ currentService.description }}</p>
+            <div class="service-details">
+                <span><i class="fas fa-users"></i> {{ currentService.capacity }}</span>
+                <span><i class="fas fa-dollar-sign"></i> Base Price: ${{ currentService.basePrice }}</span>
+            </div>
+        </header>
 
-                <!-- Booking Details -->
-                <div class="form-section">
-                    <h2>Booking Details</h2>
-                    <div class="form-group">
-                        <label for="date">Date</label>
-                        <input type="date" id="date" v-model="booking.date" required>
-                    </div>
-                    <div class="form-group">
-                        <label>Time Slot</label>
-                        <div class="time-slots">
-                            <button 
-                                v-for="time in currentService.timeSlots" 
-                                :key="time"
-                                type="button"
-                                :class="['time-slot', { active: booking.time === time }]"
-                                @click="selectTime(time)"
-                            >
-                                {{ formatTime(time) }}
-                            </button>
+        <div class="booking-form">
+            <!-- Step 1: Guest Selection -->
+            <div class="form-section" v-if="step === 1">
+                <h3>Number of Guests</h3>
+                <div class="guest-control">
+                    <button @click="decrementGuests" :disabled="booking.guests <= 1">
+                        <i class="fas fa-minus"></i>
+                    </button>
+                    <span>{{ booking.guests }} Guest(s)</span>
+                    <button @click="incrementGuests" :disabled="booking.guests >= maxGuests">
+                        <i class="fas fa-plus"></i>
+                    </button>
+                </div>
+                <p class="price-info">Base Price: ${{ calculateBasePrice }}</p>
+            </div>
+
+            <!-- Step 2: Add-ons Selection -->
+            <div class="form-section" v-if="step === 2">
+                <h3>Enhance Your Experience</h3>
+                <div class="add-ons-grid">
+                    <div v-for="addOn in availableAddOns" 
+                         :key="addOn.id" 
+                         class="add-on-card"
+                         :class="{ 'selected': addOn.quantity > 0 }">
+                        <img :src="addOn.image" :alt="addOn.name">
+                        <div class="add-on-content">
+                            <h4>{{ addOn.name }}</h4>
+                            <p>{{ addOn.description }}</p>
+                            <div class="add-on-price">${{ addOn.price }}</div>
+                            <div class="add-on-controls">
+                                <button @click="decrementAddOn(addOn)" 
+                                        :disabled="addOn.quantity <= 0">
+                                    <i class="fas fa-minus"></i>
+                                </button>
+                                <span>{{ addOn.quantity }}</span>
+                                <button @click="incrementAddOn(addOn)" 
+                                        :disabled="addOn.quantity >= (addOn.maxQuantity || 3)">
+                                    <i class="fas fa-plus"></i>
+                                </button>
+                            </div>
                         </div>
                     </div>
+                </div>
+            </div>
+
+            <!-- Step 3: Contact Information -->
+            <div class="form-section" v-if="step === 3">
+                <h3>Your Details</h3>
+                <div class="form-grid">
                     <div class="form-group">
-                        <label for="guests">Number of Guests</label>
-                        <select id="guests" v-model="booking.guests">
-                            <option v-for="n in maxGuests" :key="n" :value="n">
-                                {{ n }} {{ n === 1 ? 'Guest' : 'Guests' }}
+                        <label>Full Name</label>
+                        <input type="text" v-model="booking.fullName" @blur="validateField('fullName')">
+                        <span class="error-message" v-if="errors.fullName">{{ errors.fullName }}</span>
+                    </div>
+                    <div class="form-group">
+                        <label>Email</label>
+                        <input type="email" v-model="booking.email" @blur="validateField('email')">
+                        <span class="error-message" v-if="errors.email">{{ errors.email }}</span>
+                    </div>
+                    <div class="form-group">
+                        <label>Phone</label>
+                        <input type="tel" v-model="booking.phone" @blur="validateField('phone')">
+                        <span class="error-message" v-if="errors.phone">{{ errors.phone }}</span>
+                    </div>
+                    <div class="form-group">
+                        <label>Date</label>
+                        <input type="date" v-model="booking.date" :min="minDate">
+                        <span class="error-message" v-if="errors.date">{{ errors.date }}</span>
+                    </div>
+                    <div class="form-group">
+                        <label>Time</label>
+                        <select v-model="booking.time">
+                            <option v-for="time in currentService.timeSlots" :key="time" :value="time">
+                                {{ formatTime(time) }}
                             </option>
                         </select>
                     </div>
                 </div>
+            </div>
 
-                <!-- Price Summary -->
-                <div class="form-section">
-                    <h2>Price Summary</h2>
-                    <div class="price-summary">
-                        <div class="price-row">
-                            <span>Base Price ({{ booking.guests }} guests)</span>
-                            <span>${{ calculateBasePrice }}</span>
-                        </div>
-                        <div class="price-row total">
-                            <span>Total</span>
-                            <span>${{ calculateTotal }}</span>
-                        </div>
+            <!-- Step 4: Booking Summary -->
+            <div class="form-section summary-section" v-if="step === 4">
+                <h3>Booking Summary</h3>
+                <div class="summary-content">
+                    <div class="summary-item">
+                        <span>Service:</span>
+                        <span>{{ currentService.title }}</span>
                     </div>
-                    <button type="submit" class="btn-primary">
-                        Book Now
-                    </button>
+                    <div class="summary-item">
+                        <span>Guests:</span>
+                        <span>{{ booking.guests }}</span>
+                    </div>
+                    <div class="summary-item">
+                        <span>Date & Time:</span>
+                        <span>{{ booking.date }} at {{ formatTime(booking.time) }}</span>
+                    </div>
+                    <div class="summary-item" v-if="selectedAddOns.length">
+                        <span>Add-ons:</span>
+                        <ul class="summary-addons">
+                            <li v-for="addOn in selectedAddOns" :key="addOn.id">
+                                {{ addOn.name }} (x{{ addOn.quantity }}) - ${{ calculateAddOnSubtotal(addOn) }}
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="total-price">
+                        <span>Total Price:</span>
+                        <span>${{ calculateTotalPrice }}</span>
+                    </div>
                 </div>
-            </form>
+            </div>
+
+            <div class="form-actions">
+                <button v-if="step > 1" 
+                        @click="previousStep" 
+                        class="btn-secondary">
+                    <i class="fas fa-arrow-left"></i> Previous
+                </button>
+                <button v-if="step < 4" 
+                        @click="nextStep" 
+                        class="btn-primary">
+                    Next <i class="fas fa-arrow-right"></i>
+                </button>
+                <button v-else 
+                        @click="submitBooking" 
+                        class="btn-primary">
+                    Confirm Booking <i class="fas fa-check"></i>
+                </button>
+            </div>
         </div>
     </div>
 
-    <!-- Scripts -->
     <script src="booking.js"></script>
 </body>
 </html>
